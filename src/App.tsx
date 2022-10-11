@@ -1,78 +1,29 @@
-import * as esbuild from "esbuild-wasm";
+import "./App.css"
+import bundler from "./bundler";
+import { useState } from 'react';
+import styled from "styled-components";
 import CodeEditor from "./components/CodeEditor";
-import { useEffect, useRef, useState } from 'react';
-import { fetchPlugin } from "./plugins/fetch-plugin";
-import { unpkgPathPlugin } from "./plugins/unpkg-path-plugin";
+import CodePreview from "./components/CodePreview";
+
+const Root = styled.div({
+})
 
 const App = () => {
-  const [input, setInput] = useState("");
-  const iframe = useRef<HTMLIFrameElement | null>(null);
+  const [input, setInput] = useState<string>("");
+  const [output, setOutput] = useState<string>("");
 
-  useEffect(() => { startService(); }, [])
+  const onClick = async () => setOutput(await bundler(input));
 
-  const startService = async () => {
-    await esbuild.initialize({
-      worker: true,
-      wasmURL: "https://unpkg.com/esbuild-wasm@0.15.10/esbuild.wasm",
-    })
-  }
-
-  const onClick = async () => {
-    if (!iframe.current?.contentWindow) return null;
-
-    iframe.current.srcdoc = html;
-
-    const res = await esbuild.build({
-      entryPoints: ["index.js"],
-      bundle: true,
-      write: false,
-      plugins: [
-        unpkgPathPlugin(),
-        fetchPlugin(input),
-      ],
-      define: {
-        "process.env.NODE_ENV": '"production"',
-      },
-    });
-
-    iframe.current.contentWindow.postMessage(res.outputFiles[0].text, "*");
-  }
-
-  const html = `
-  <html>
-    <head>
-    </head>
-    <body>
-      <div id="root"></div>
-      <script>
-        window.addEventListener('message', (event) => { 
-          try {
-            eval(event.data); 
-          }
-          catch (err) {
-            const root = document.getElementById('root');
-            root.innerHTML = '<div style="color : red;"><h4>Runtime Error</h4>' + err + '</div>';
-            console.error(err);
-          }
-        }, false);
-      </script>
-    </body>
-  </html>
-`
-
-  return <div>
+  return <Root>
     <CodeEditor
       value={input}
+      onBundle={onClick}
       onChange={setInput}
     />
-    <iframe
-      ref={iframe}
-      title="codepreview"
-      sandbox="allow-scripts"
-      srcDoc={html}
+    <CodePreview
+      code={output}
     />
-    <button onClick={onClick}>Submit</button>
-  </div>;
+  </Root>;
 }
 
 export default App
