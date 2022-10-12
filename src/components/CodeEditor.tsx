@@ -11,8 +11,12 @@ interface CodeEditorProps {
   onChange: (value: string) => void;
 }
 
-const Container = styled.div({
+const EditorWrapper = styled.div({
   position: "relative",
+  width: "calc(100% - 14px)",
+  "& .monaco-editor": {
+    paddingLeft: "1px !important",
+  },
   ":hover": {
     "& button": {
       opacity: 1,
@@ -22,35 +26,39 @@ const Container = styled.div({
   }
 })
 
-const FormatButton = styled.button({
+const ButtonContainer = styled.div({
   position: "absolute",
   zIndex: 10,
   right: 0,
-  height: 36,
+  display: "flex",
+  flexDirection: "row",
+  margin: 4,
+  columnGap: 4,
+})
+
+const FormatButton = styled.button({
+  height: 30,
+  borderRadius: 2,
   width: 100,
-  backgroundColor: "red",
+  backgroundColor: "#8c1121",
   border: "none",
   color: "white",
   fontWeight: 800,
   opacity: 0,
-  margin: 4,
   ":hover": {
     cursor: "pointer"
   }
 })
 
 const BundleButton = styled.button({
-  position: "absolute",
-  zIndex: 10,
-  right: 106,
-  height: 36,
+  height: 30,
+  borderRadius: 2,
   width: 60,
-  backgroundColor: "green",
+  backgroundColor: "#489c21",
   border: "none",
   color: "white",
   fontWeight: 800,
   opacity: 0,
-  margin: 4,
   ":hover": {
     cursor: "pointer"
   }
@@ -76,14 +84,15 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onBundle, onChange }) =>
     editorRef.current.setValue(formatted);
   }
 
-  return <Container>
-    {editorRef.current && <BundleButton onClick={onBundle}>Run</BundleButton>}
-    {editorRef.current && <FormatButton onClick={onFormatClick}>Format</FormatButton>}
+  return <EditorWrapper>
+    <ButtonContainer>
+      {editorRef.current && <BundleButton onClick={onBundle}>Run</BundleButton>}
+      {editorRef.current && <FormatButton onClick={onFormatClick}>Format</FormatButton>}
+    </ButtonContainer>
     <Editor
       value={value}
       onChange={(e) => e && onChange(e)}
       onMount={onMount}
-      height="40vh"
       defaultLanguage="javascript"
       theme="vs-dark"
       options={{
@@ -98,7 +107,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onBundle, onChange }) =>
         tabSize: 2,
       }}
     />
-  </Container>
+  </EditorWrapper>
 }
 
 export default CodeEditor
