@@ -1,6 +1,6 @@
-import React from 'react';
 import styled from "styled-components";
-import { ResizableBox, ResizableBoxProps } from "react-resizable";
+import React, { useEffect, useState } from 'react';
+import { ResizableBox, ResizableBoxProps, ResizeCallbackData } from "react-resizable";
 
 interface ResizableProps {
   direction: "horizontal" | "vertical";
@@ -36,20 +36,44 @@ const StyledResizableBox = styled(ResizableBox)({
 const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
   let resizableProps: ResizableBoxProps;
 
+  const [width, setWidth] = useState<number>(window.innerWidth * 0.5 + 7);
+  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
+  const [innerHeight, setInnerHeight] = useState<number>(window.innerHeight);
+
+  useEffect(() => {
+    let timer: NodeJS.Timer;
+
+    const listener = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        setInnerWidth(window.innerWidth);
+        setInnerHeight(window.innerHeight);
+      }, 100);
+    }
+
+    window.addEventListener("resize", listener);
+
+    return () => {
+      window.removeEventListener("resize", listener);
+    }
+  }, [width]);
+
+
   if (direction === 'horizontal') {
     resizableProps = {
       className: 'resize-horizontal',
-      minConstraints: [window.innerWidth * 0.2, Infinity],
-      maxConstraints: [window.innerWidth * 0.8, Infinity],
+      minConstraints: [innerWidth * 0.2, Infinity],
+      maxConstraints: [innerWidth * 0.8, Infinity],
       height: Infinity,
-      width: window.innerWidth * 0.5 + 7,
+      width: width,
       resizeHandles: ['e'],
+      onResizeStop: (_, data: ResizeCallbackData) => setWidth(data.size.width),
     };
   } else {
     resizableProps = {
       minConstraints: [Infinity, 100],
-      maxConstraints: [Infinity, window.innerHeight * 0.9],
-      height: 600,
+      maxConstraints: [Infinity, innerHeight * 0.9],
+      height: innerHeight * 0.4,
       width: Infinity,
       resizeHandles: ['s'],
     };

@@ -31,6 +31,9 @@ const CodePreview: React.FC<CodePreviewProps> = ({ code }) => {
   const html = `
   <html>
     <head>
+      <style>
+        html { background-color: white; }
+      </style>
     </head>
     <body>
       <div id="root"></div>
@@ -52,8 +55,7 @@ const CodePreview: React.FC<CodePreviewProps> = ({ code }) => {
 
   useEffect(() => {
     if (!iframe.current?.contentWindow) return;
-    if (iframe.current.srcdoc !== html) iframe.current.srcdoc = html;
-    iframe.current.contentWindow.postMessage(code, "*");
+    setTimeout(() => iframe.current?.contentWindow?.postMessage(code, "*"), 50);
   }, [code, html])
 
   return <PreviewWrapper>

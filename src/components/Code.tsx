@@ -1,9 +1,9 @@
-import bundler from "../bundler";
-import { useState } from 'react';
+import useBundler from "../bundler";
+import Resizable from "./Resizable";
 import CodeEditor from "./CodeEditor";
 import styled from "styled-components";
 import CodePreview from "./CodePreview";
-import Resizable from "./Resizable";
+import { useEffect, useState } from 'react';
 
 const Container = styled.div({
   height: "100%",
@@ -12,17 +12,20 @@ const Container = styled.div({
 })
 
 const Code = () => {
+  const [loading, output, build] = useBundler();
   const [input, setInput] = useState<string>("");
-  const [output, setOutput] = useState<string>("");
 
-  const onClick = async () => setOutput(await bundler(input));
+  useEffect(() => {
+    const timer = setTimeout(() => build(input), 500);
+    return () => clearTimeout(timer);
+  }, [input, build]);
 
   return <Resizable direction="vertical">
     <Container>
       <Resizable direction="horizontal">
         <CodeEditor
           value={input}
-          onBundle={onClick}
+          loading={loading}
           onChange={setInput}
         />
       </Resizable>

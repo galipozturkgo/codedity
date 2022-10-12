@@ -7,7 +7,7 @@ import parser from "prettier/parser-babel";
 
 interface CodeEditorProps {
   value: string;
-  onBundle: () => void;
+  loading: boolean;
   onChange: (value: string) => void;
 }
 
@@ -47,29 +47,16 @@ const FormatButton = styled.button({
   opacity: 0,
   ":hover": {
     cursor: "pointer"
-  }
+  },
+  ":disabled": {
+    cursor: "not-allowed"
+  },
 })
 
-const BundleButton = styled.button({
-  height: 30,
-  borderRadius: 2,
-  width: 60,
-  backgroundColor: "#489c21",
-  border: "none",
-  color: "white",
-  fontWeight: 800,
-  opacity: 0,
-  ":hover": {
-    cursor: "pointer"
-  }
-})
-
-const CodeEditor: React.FC<CodeEditorProps> = ({ value, onBundle, onChange }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ value, loading, onChange }) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
-  const onMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    editorRef.current = editor;
-  }
+  const onMount = (editor: monaco.editor.IStandaloneCodeEditor) => editorRef.current = editor;
 
   const onFormatClick = () => {
     if (!editorRef.current) return;
@@ -86,8 +73,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onBundle, onChange }) =>
 
   return <EditorWrapper>
     <ButtonContainer>
-      {editorRef.current && <BundleButton onClick={onBundle}>Run</BundleButton>}
-      {editorRef.current && <FormatButton onClick={onFormatClick}>Format</FormatButton>}
+      {editorRef.current && <FormatButton disabled={loading} onClick={onFormatClick}>Format</FormatButton>}
     </ButtonContainer>
     <Editor
       value={value}
