@@ -1,13 +1,13 @@
 import { useRef } from "react";
 import prettier from "prettier";
 import monaco from "monaco-editor";
-import { Button, styled } from "@mui/material";
 import Editor from "@monaco-editor/react";
 import parser from "prettier/parser-babel";
+import { Button, styled } from "@mui/material";
+import Loading from "components/shared/Loading";
 
 interface CodeEditorProps {
   value: string;
-  onMount: () => void;
   onChange: (value: string) => void;
 }
 
@@ -52,13 +52,10 @@ const FormatButton = styled(Button)({
   },
 })
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ value, onMount, onChange }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
-  const onEditorMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    editorRef.current = editor;
-    onMount();
-  }
+  const onEditorMount = (editor: monaco.editor.IStandaloneCodeEditor) => editorRef.current = editor;
 
   const onFormatClick = () => {
     if (!editorRef.current) return;
@@ -82,7 +79,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onMount, onChange }) => 
       onChange={(e) => e && onChange(e)}
       onMount={onEditorMount}
       defaultLanguage="javascript"
-      loading="Yükleniyor..."
+      loading={<Loading />}
       theme="vs-dark"
       options={{
         wordWrap: "on",

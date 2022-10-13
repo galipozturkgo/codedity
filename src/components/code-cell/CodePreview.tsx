@@ -73,8 +73,6 @@ const CodePreview: React.FC<BundlerOutputProps> = ({ code, error }) => {
   
   </html>`;
 
-  console.log("qwueyqıouwe")
-
   useEffect(() => {
     if (!iframe.current?.contentWindow) return;
     iframe.current.srcdoc = sourceDoc;
