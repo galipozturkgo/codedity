@@ -1,8 +1,12 @@
 
 import * as esbuild from "esbuild-wasm";
-import { useState } from "react";
 import { fetchPlugin } from "./plugins/fetch-plugin";
 import { unpkgPathPlugin } from "./plugins/unpkg-path-plugin";
+
+export interface BundlerOutputProps {
+  code: string,
+  error: string,
+}
 
 const initialize = async () => {
   await esbuild.initialize({
@@ -11,32 +15,35 @@ const initialize = async () => {
   })
 }
 
-const useBundler = (): [string, (rawCode: string) => void] => {
-  const [output, setOutput] = useState<string>("");
-
-  const build = async (rawCode: string) => {
-    try {
-      const res = await esbuild.build({
-        entryPoints: ["index.js"],
-        bundle: true,
-        write: false,
-        plugins: [
-          unpkgPathPlugin(),
-          fetchPlugin(rawCode),
-        ],
-        define: {
-          "process.env.NODE_ENV": '"production"',
-        },
-      });
-      setOutput(res.outputFiles[0].text);
-    } catch (err) {
-      console.log(err);
+const bundler = async (rawCode: string) => {
+  try {
+    const res = await esbuild.build({
+      entryPoints: ["index.js"],
+      bundle: true,
+      write: false,
+      plugins: [
+        unpkgPathPlugin(),
+        fetchPlugin(rawCode),
+      ],
+      define: {
+        "process.env.NODE_ENV": '"production"',
+      },
+    });
+    return {
+      code: res.outputFiles[0].text,
+      error: "",
+    };
+  } catch (err) {
+    if (err instanceof Error) {
+      return {
+        code: "",
+        error: err.message,
+      };
     }
+    throw err;
   }
-
-  return [output, build]
 }
 
 initialize();
 
-export default useBundler;
+export default bundler;

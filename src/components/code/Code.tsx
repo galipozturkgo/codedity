@@ -1,10 +1,10 @@
+import CodeEditor from "./CodeEditor";
 import { styled } from "@mui/material";
-import useBundler from "bundler";
+import CodePreview from "./CodePreview";
+import { useState, useEffect } from "react";
 import Loading from "components/shared/Loading";
 import Resizable from "components/shared/Resizable";
-import { useState, useEffect } from "react";
-import CodeEditor from "./CodeEditor";
-import CodePreview from "./CodePreview";
+import bundler, { BundlerOutputProps } from "bundler";
 
 const Container = styled("div")({
   height: "100%",
@@ -24,14 +24,14 @@ const LoadingLayout = styled("div")({
 })
 
 const Code = () => {
-  const [output, build] = useBundler();
   const [input, setInput] = useState<string>("");
   const [initialized, setInitialized] = useState<boolean>(false);
+  const [output, setOutput] = useState<BundlerOutputProps>({ code: "", error: "" });
 
   useEffect(() => {
-    const timer = setTimeout(() => build(input), 500);
+    const timer = setTimeout(async () => setOutput(await bundler(input)), 500);
     return () => clearTimeout(timer);
-  }, [input, build]);
+  }, [input]);
 
   return <Resizable direction="vertical">
     <Container>
@@ -46,9 +46,7 @@ const Code = () => {
           onChange={setInput}
         />
       </Resizable>
-      <CodePreview
-        code={output}
-      />
+      <CodePreview {...output} />
     </Container>
   </Resizable>;
 }
