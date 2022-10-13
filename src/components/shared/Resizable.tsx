@@ -19,14 +19,14 @@ const StyledResizableBox = styled(ResizableBox)({
     backgroundPosition: "50%",
   },
   "& > .react-resizable-handle-s": {
-    height: "14px",
+    height: "10px",
     width: "100%",
     cursor: "row-resize",
     backgroundImage: "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=')",
   },
   "& > .react-resizable-handle-e": {
-    width: "14px",
-    minWidth: "14px",
+    width: "10px",
+    minWidth: "10px",
     height: "100%",
     cursor: "col-resize",
     backgroundImage: "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==')",
@@ -36,7 +36,7 @@ const StyledResizableBox = styled(ResizableBox)({
 const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
   let resizableProps: ResizableBoxProps;
 
-  const [width, setWidth] = useState<number>(window.innerWidth * 0.5 + 7);
+  const [width, setWidth] = useState<number>(window.innerWidth * 0.5 + 5);
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [innerHeight, setInnerHeight] = useState<number>(window.innerHeight);
 

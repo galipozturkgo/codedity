@@ -13,7 +13,7 @@ interface CodeEditorProps {
 
 const EditorWrapper = styled("div")({
   position: "relative",
-  width: "calc(100% - 14px)",
+  width: "calc(100% - 10px)",
   "& .monaco-editor": {
     paddingLeft: "1px !important",
   },

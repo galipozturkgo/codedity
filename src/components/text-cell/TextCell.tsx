@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 
 const MDEditorWrapper = styled("div")({
   "& .w-md-editor-toolbar": {
-    backgroundColor: "#232a30",
+    backgroundColor: "#1e1e1e",
   },
   "& .w-md-editor": {
     backgroundColor: "#1e1e1e",
@@ -14,7 +14,7 @@ const MDEditorWrapper = styled("div")({
   },
   "& .w-md-editor-bar": {
     width: "100%",
-    height: "14px",
+    height: "10px",
     cursor: "row-resize",
     backgroundColor: "#37414b",
     backgroundRepeat: "no-repeat",
