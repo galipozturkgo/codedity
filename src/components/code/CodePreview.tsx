@@ -1,11 +1,11 @@
-import styled from 'styled-components';
+import { styled } from "@mui/material";
 import React, { useEffect, useRef } from 'react'
 
 interface CodePreviewProps {
   code: string;
 }
 
-const PreviewWrapper = styled.div({
+const PreviewWrapper = styled("div")({
   position: "relative",
   height: "100%",
   flexGrow: 1,
@@ -20,7 +20,7 @@ const PreviewWrapper = styled.div({
   }
 })
 
-const Preview = styled.iframe({
+const Preview = styled("iframe")({
   width: "100%",
   height: "100%",
   border: 0,

@@ -11,13 +11,11 @@ const initialize = async () => {
   })
 }
 
-const useBundler = (): [boolean, string, (rawCode: string) => void] => {
+const useBundler = (): [string, (rawCode: string) => void] => {
   const [output, setOutput] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
 
   const build = async (rawCode: string) => {
     try {
-      setLoading(true);
       const res = await esbuild.build({
         entryPoints: ["index.js"],
         bundle: true,
@@ -31,14 +29,12 @@ const useBundler = (): [boolean, string, (rawCode: string) => void] => {
         },
       });
       setOutput(res.outputFiles[0].text);
-    } catch {
-    }
-    finally {
-      setLoading(false);
+    } catch (err) {
+      console.log(err);
     }
   }
 
-  return [loading, output, build]
+  return [output, build]
 }
 
 initialize();
