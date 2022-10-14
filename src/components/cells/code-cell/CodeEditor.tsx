@@ -3,8 +3,8 @@ import prettier from "prettier";
 import monaco from "monaco-editor";
 import Editor from "@monaco-editor/react";
 import parser from "prettier/parser-babel";
+import Loading from 'base/components/Loading';
 import { Button, styled } from "@mui/material";
-import Loading from "components/shared/Loading";
 
 interface CodeEditorProps {
   value: string;

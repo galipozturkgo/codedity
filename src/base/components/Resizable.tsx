@@ -1,5 +1,5 @@
 import { styled } from "@mui/material";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { ResizableBox, ResizableBoxProps, ResizeCallbackData } from "react-resizable";
 
 interface ResizableProps {

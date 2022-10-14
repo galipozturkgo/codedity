@@ -1,12 +1,8 @@
 import "./App.css";
-import TextCell from "components/text-cell/TextCell";
-import CodeCell from "./components/code-cell/CodeCell"
+import CellList from 'components/cells/cell-list/CellList';
 
 const App = () => {
-  return <div>
-    <TextCell />
-    <CodeCell />
-  </div>
+  return <CellList />
 }
 
 export default App

@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
-import MDEditor from '@uiw/react-md-editor';
-import { useEffect, useState, useRef } from 'react';
+import MDEditor from "@uiw/react-md-editor";
+import { useEffect, useState, useRef } from "react";
 
 const MDEditorWrapper = styled("div")({
   "& .w-md-editor-toolbar": {

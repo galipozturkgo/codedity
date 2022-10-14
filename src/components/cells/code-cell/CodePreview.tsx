@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 import { BundlerOutputProps } from "bundler";
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from "react";
 
 const PreviewWrapper = styled("div")({
   position: "relative",
