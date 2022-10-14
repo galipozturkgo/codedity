@@ -1,6 +1,7 @@
 import { styled } from "@mui/material";
 import MDEditor from "@uiw/react-md-editor";
 import { useEffect, useState, useRef } from "react";
+import { Cell, useCellsActions } from '../state/cellsSlice';
 
 const MDEditorWrapper = styled("div")({
   "& .w-md-editor-toolbar": {
@@ -28,14 +29,19 @@ const MDEditorWrapper = styled("div")({
 
 const MDEditorPreviewWrapper = styled("div")({
   "& .wmde-markdown": {
+    padding: "14px 20px",
     backgroundColor: "#1e1e1e",
   }
 })
 
-const TextCell = () => {
+interface TextCellProps {
+  cell: Cell;
+}
+
+const TextCell: React.FC<TextCellProps> = ({ cell }) => {
+  const { updateCell } = useCellsActions();
   const editorRef = useRef<HTMLDivElement | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
-  const [value, setValue] = useState<string | undefined>("# Header");
 
   useEffect(() => {
     const listener = (event: MouseEvent) => {
@@ -54,15 +60,15 @@ const TextCell = () => {
   if (editing) {
     return <MDEditorWrapper ref={editorRef}>
       <MDEditor
-        value={value}
-        onChange={setValue}
+        value={cell.content}
+        onChange={(value?: string) => updateCell({ id: cell.id, content: value || "" })}
       />
     </MDEditorWrapper>
   }
 
   return <MDEditorPreviewWrapper onClick={() => setEditing(true)}>
     <MDEditor.Markdown
-      source={value}
+      source={cell.content || "Click to edit"}
       style={{ whiteSpace: 'pre-wrap' }}
     />
   </MDEditorPreviewWrapper>

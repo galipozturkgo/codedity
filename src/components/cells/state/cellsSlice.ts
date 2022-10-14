@@ -21,10 +21,16 @@ export interface CellsState {
 }
 
 const initialState: CellsState = {
-  data: {},
+  data: {
+    "test": {
+      id: "test",
+      content: "",
+      type: "text",
+    }
+  },
   loading: false,
   error: null,
-  order: [],
+  order: ["test"],
 }
 
 interface UpdateCellAction {

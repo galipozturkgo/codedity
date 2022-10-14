@@ -1,7 +1,7 @@
 import CodeEditor from "./CodeEditor";
 import { styled } from "@mui/material";
 import CodePreview from "./CodePreview";
-import { Cell } from '../state/cellsSlice';
+import { Cell, useCellsActions } from '../state/cellsSlice';
 import { useState, useEffect } from "react";
 import Resizable from 'base/components/Resizable';
 import bundler, { BundlerOutputProps } from "bundler";
@@ -17,20 +17,21 @@ interface CodeCellProps {
 }
 
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
-  const [input, setInput] = useState<string>("");
+  const { updateCell } = useCellsActions();
+
   const [output, setOutput] = useState<BundlerOutputProps>({ code: "", error: "" });
 
   useEffect(() => {
-    const timer = setTimeout(async () => setOutput(await bundler(input)), 500);
+    const timer = setTimeout(async () => setOutput(await bundler(cell.content)), 500);
     return () => clearTimeout(timer);
-  }, [input]);
+  }, [cell.content]);
 
   return <Resizable direction="vertical">
     <Container>
       <Resizable direction="horizontal">
         <CodeEditor
-          value={input}
-          onChange={setInput}
+          value={cell.content}
+          onChange={(value) => updateCell({ id: cell.id, content: value })}
         />
       </Resizable>
       <CodePreview {...output} />
