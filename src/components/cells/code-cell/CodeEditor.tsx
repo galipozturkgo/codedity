@@ -1,10 +1,11 @@
 import { useRef } from "react";
 import prettier from "prettier";
 import monaco from "monaco-editor";
+import { styled } from "@mui/material";
 import Editor from "@monaco-editor/react";
 import parser from "prettier/parser-babel";
-import Loading from 'base/components/Loading';
-import { Button, styled } from "@mui/material";
+import Button from 'components/shared/Button';
+import Loading from 'components/shared/Loading';
 
 interface CodeEditorProps {
   value: string;
@@ -34,21 +35,8 @@ const ButtonContainer = styled("div")({
   flexDirection: "row",
   margin: 4,
   columnGap: 4,
-})
-
-const FormatButton = styled(Button)({
-  height: 30,
-  borderRadius: 2,
-  width: 100,
-  backgroundColor: "#8c1121",
-  border: "none",
-  color: "white",
-  fontWeight: 700,
-  textTransform: "unset",
-  opacity: 0,
-  ":hover": {
-    cursor: "pointer",
-    background: "#ff0000",
+  "& button": {
+    opacity: 0,
   },
 })
 
@@ -72,7 +60,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
 
   return <EditorWrapper>
     {editorRef.current && <ButtonContainer>
-      <FormatButton onClick={onFormatClick}>Format</FormatButton>
+      <Button color="error" onClick={onFormatClick}>Format</Button>
     </ButtonContainer>}
     <Editor
       value={value}

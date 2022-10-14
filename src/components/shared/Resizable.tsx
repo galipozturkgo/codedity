@@ -36,7 +36,7 @@ const StyledResizableBox = styled(ResizableBox)({
 const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
   let resizableProps: ResizableBoxProps;
 
-  const [width, setWidth] = useState<number>(window.innerWidth * 0.5 + 5);
+  const [width, setWidth] = useState<number>(window.innerWidth * 0.5 - 10);
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [innerHeight, setInnerHeight] = useState<number>(window.innerHeight);
 

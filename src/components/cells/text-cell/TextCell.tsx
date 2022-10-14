@@ -4,13 +4,13 @@ import { useEffect, useState, useRef } from "react";
 import { Cell, useCellsActions } from '../state/cellsSlice';
 
 const MDEditorWrapper = styled("div")({
-  "& .w-md-editor-toolbar": {
-    backgroundColor: "#1e1e1e",
-  },
   "& .w-md-editor": {
     backgroundColor: "#1e1e1e",
   },
   "& .wmde-markdown": {
+    backgroundColor: "#1e1e1e",
+  },
+  "& .w-md-editor-toolbar": {
     backgroundColor: "#1e1e1e",
   },
   "& .w-md-editor-bar": {

@@ -1,16 +1,17 @@
 import CodeEditor from "./CodeEditor";
 import { styled } from "@mui/material";
 import CodePreview from "./CodePreview";
-import { Cell, useCellsActions } from '../state/cellsSlice';
 import { useState, useEffect } from "react";
-import Resizable from 'base/components/Resizable';
+import Resizable from 'components/shared/Resizable';
 import bundler, { BundlerOutputProps } from "bundler";
+import { Cell, useCellsActions } from '../state/cellsSlice';
 
-const Container = styled("div")({
-  height: "100%",
+const Container = styled("div")(({ theme }) => ({
+  height: "calc(100% - 10px)",
   display: "flex",
   flexDirection: "row",
-});
+
+}));
 
 interface CodeCellProps {
   cell: Cell

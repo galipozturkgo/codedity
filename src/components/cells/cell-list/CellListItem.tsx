@@ -10,7 +10,7 @@ interface CellListItemProps {
 const CellListItem: React.FC<CellListItemProps> = ({ cell }) => {
   const CurrentCell = cell.type === "code" ? CodeCell : TextCell;
 
-  return <CurrentCell cell={cell} />
+  return <CurrentCell cell={cell} />;
 }
 
 export default CellListItem

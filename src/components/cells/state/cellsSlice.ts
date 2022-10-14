@@ -22,15 +22,20 @@ export interface CellsState {
 
 const initialState: CellsState = {
   data: {
-    "test": {
-      id: "test",
+    "code": {
+      id: "code",
+      content: "",
+      type: "code",
+    },
+    "text": {
+      id: "text",
       content: "",
       type: "text",
     }
   },
   loading: false,
   error: null,
-  order: ["test"],
+  order: ["text", "code"],
 }
 
 interface UpdateCellAction {
@@ -77,9 +82,9 @@ const slice = createSlice({
       state.data[cell.id] = cell;
       const index = state.order.findIndex(orderedId => orderedId === id);
       if (index < 0) {
-        state.order.push(cell.id);
+        state.order.unshift(cell.id);
       } else {
-        state.order.splice(index, 0, cell.id);
+        state.order.splice(index + 1, 0, cell.id);
       }
     },
     moveCell: (state, action: PayloadAction<MoveCellAction>) => {
@@ -89,9 +94,6 @@ const slice = createSlice({
       if (targetIndex < 0 || targetIndex > state.order.length - 1) return;
       state.order[index] = state.order[targetIndex];
       state.order[targetIndex] = id;
-    },
-    fetchCells: (state) => {
-
     },
   },
 })
