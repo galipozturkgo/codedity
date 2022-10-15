@@ -1,17 +1,45 @@
+import { useEffect } from "react";
 import CodeEditor from "./CodeEditor";
 import { styled } from "@mui/material";
 import CodePreview from "./CodePreview";
-import { useState, useEffect } from "react";
+import { useTypedSelector } from 'state/hooks';
+import Loading from 'components/shared/Loading';
 import Resizable from 'components/shared/Resizable';
-import bundler, { BundlerOutputProps } from "bundler";
 import { Cell, useCellsActions } from '../state/cellsSlice';
+import { useBundleActions } from 'bundle/state/bundlesSlice';
 
-const Container = styled("div")(({ theme }) => ({
+const Container = styled("div")({
   height: "calc(100% - 10px)",
   display: "flex",
   flexDirection: "row",
+});
 
-}));
+const Preview = styled("div")({
+  height: "100%",
+  flexGrow: 1,
+  backgroundColor: "white",
+})
+
+const LoadingWrapper = styled("div")({
+  height: "100%",
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+
+  "@keyframes pulsate": {
+    from: {
+      opacity: 0,
+    },
+    to: {
+      opacity: 1,
+    }
+  },
+  animation: "pulsate 0.5s",
+  "& svg": {
+    color: "#232a30"
+  }
+})
 
 interface CodeCellProps {
   cell: Cell
@@ -19,13 +47,20 @@ interface CodeCellProps {
 
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const { updateCell } = useCellsActions();
-
-  const [output, setOutput] = useState<BundlerOutputProps>({ code: "", error: "" });
+  const { createBundle } = useBundleActions();
+  const bundle = useTypedSelector(state => state.bundles[cell.id]);
 
   useEffect(() => {
-    const timer = setTimeout(async () => setOutput(await bundler(cell.content)), 500);
+    if (!bundle) {
+      createBundle({ cellId: cell.id, rawCode: cell.content });
+      return;
+    }
+
+    const timer = setTimeout(() => createBundle({ cellId: cell.id, rawCode: cell.content }), 750);
     return () => clearTimeout(timer);
-  }, [cell.content]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cell.id, cell.content, createBundle]);
 
   return <Resizable direction="vertical">
     <Container>
@@ -35,7 +70,15 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
           onChange={(value) => updateCell({ id: cell.id, content: value })}
         />
       </Resizable>
-      <CodePreview {...output} />
+      <Preview>
+        {!bundle || bundle.loading ? <LoadingWrapper>
+          <Loading />
+        </LoadingWrapper>
+          : <CodePreview
+            code={bundle.output.code}
+            error={bundle.output.error}
+          />}
+      </Preview>
     </Container>
   </Resizable>;
 }

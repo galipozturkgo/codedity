@@ -1,5 +1,5 @@
 import { styled } from "@mui/material";
-import { BundlerOutputProps } from "bundler";
+import { BundleOutputProps } from "bundle";
 import React, { useEffect, useRef } from "react";
 
 const PreviewWrapper = styled("div")({
@@ -30,7 +30,7 @@ const ErrorWrapper = styled("div")({
   color: "red",
 })
 
-const CodePreview: React.FC<BundlerOutputProps> = ({ code, error }) => {
+const CodePreview: React.FC<BundleOutputProps> = ({ code, error }) => {
   const iframe = useRef<HTMLIFrameElement | null>(null);
   const sourceDoc = `<!DOCTYPE html>
   <html lang="en">

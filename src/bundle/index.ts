@@ -3,19 +3,25 @@ import * as esbuild from "esbuild-wasm";
 import { fetchPlugin } from "./plugins/fetch-plugin";
 import { unpkgPathPlugin } from "./plugins/unpkg-path-plugin";
 
-export interface BundlerOutputProps {
+export interface BundleOutputProps {
   code: string,
   error: string,
 }
+
+let initialized: boolean = false;
 
 const initialize = async () => {
   await esbuild.initialize({
     worker: true,
     wasmURL: "https://unpkg.com/esbuild-wasm@0.15.10/esbuild.wasm",
-  })
+  }).then(() => initialized = true);
 }
 
-const bundler = async (rawCode: string) => {
+initialize();
+
+const bundle = async (rawCode: string) => {
+  if (!initialized) return { code: "", error: "" };
+
   try {
     const res = await esbuild.build({
       entryPoints: ["index.js"],
@@ -44,6 +50,4 @@ const bundler = async (rawCode: string) => {
   }
 }
 
-initialize();
-
-export default bundler;
+export default bundle;

@@ -33,7 +33,7 @@ const ButtonContainer = styled("div")({
   right: 0,
   display: "flex",
   flexDirection: "row",
-  margin: 4,
+  marginTop: 4,
   columnGap: 4,
   "& button": {
     opacity: 0,
