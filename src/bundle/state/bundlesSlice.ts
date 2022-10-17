@@ -1,7 +1,7 @@
-import { useAppDispatch } from 'state/hooks';
-import bundle, { BundleOutputProps } from "bundle";
-import { bindActionCreators, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { useMemo } from 'react';
+import bundle, { BundleOutputProps } from "bundle";
+import { useAppDispatch } from 'hooks/useAppDispatch';
+import { bindActionCreators, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface BundlesState {
   [key: string]: {
@@ -10,9 +10,7 @@ export interface BundlesState {
   } | undefined,
 }
 
-const initialState: BundlesState = {
-
-}
+const initialState: BundlesState = {}
 
 interface BundleAction {
   cellId: string;

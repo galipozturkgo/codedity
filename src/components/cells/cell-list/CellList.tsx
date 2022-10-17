@@ -1,8 +1,8 @@
 import { styled } from '@mui/material';
 import CellListItem from './CellListItem';
 import AddCell from '../add-cell/AddCell';
-import { useTypedSelector } from 'state/hooks'
 import CellActions from '../cell-actions/CellActions';
+import { useTypedSelector } from 'hooks/useTypedSelector';
 
 const CellListWrapper = styled("div")({
   display: "flex",

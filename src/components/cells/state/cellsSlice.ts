@@ -1,4 +1,4 @@
-import { useAppDispatch } from 'state/hooks';
+import { useAppDispatch } from 'hooks/useAppDispatch';
 import { bindActionCreators, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type CellType = "code" | "text";

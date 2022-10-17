@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import CodeEditor from "./CodeEditor";
 import { styled } from "@mui/material";
 import CodePreview from "./CodePreview";
-import { useTypedSelector } from 'state/hooks';
 import Loading from 'components/shared/Loading';
 import Resizable from 'components/shared/Resizable';
+import { useTypedSelector } from 'hooks/useTypedSelector';
 import { Cell, useCellsActions } from '../state/cellsSlice';
 import { useBundleActions } from 'bundle/state/bundlesSlice';
+import { useCumulativeCode } from 'hooks/useCumulativeCode';
 
 const Container = styled("div")({
   height: "calc(100% - 10px)",
@@ -48,16 +49,21 @@ interface CodeCellProps {
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const { updateCell } = useCellsActions();
   const { createBundle } = useBundleActions();
+  const cumulativeCodes = useCumulativeCode(cell.id);
   const bundle = useTypedSelector(state => state.bundles[cell.id]);
 
   useEffect(() => {
     if (!bundle) {
-      createBundle({ cellId: cell.id, rawCode: cell.content });
+      createBundle({ cellId: cell.id, rawCode: cumulativeCodes });
       return;
     }
 
-    const timer = setTimeout(() => createBundle({ cellId: cell.id, rawCode: cell.content }), 750);
-    return () => clearTimeout(timer);
+    const timer = setTimeout(() => {
+      createBundle({ cellId: cell.id, rawCode: cumulativeCodes });
+    }, 750);
+    return () => {
+      clearTimeout(timer);
+    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cell.id, cell.content, createBundle]);
