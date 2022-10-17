@@ -74,17 +74,13 @@ const slice = createSlice({
     },
     insertCell: (state, action: PayloadAction<InsertCellAction>) => {
       const { id, type } = action.payload;
-      const cell: Cell = {
-        id: randomId(),
-        content: "",
-        type: type,
-      };
+      const cell: Cell = { id: randomId(), content: "", type: type };
       state.data[cell.id] = cell;
       const index = state.order.findIndex(orderedId => orderedId === id);
       if (index < 0) {
-        state.order.unshift(cell.id);
+        state.order.push(cell.id);
       } else {
-        state.order.splice(index + 1, 0, cell.id);
+        state.order.splice(index, 0, cell.id);
       }
     },
     moveCell: (state, action: PayloadAction<MoveCellAction>) => {
