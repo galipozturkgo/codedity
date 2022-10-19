@@ -21,7 +21,7 @@
     "@types/redux-logger": "^3.0.9",
     "@uiw/react-md-editor": "^3.19.0",
     "axios": "^1.1.2",
-    "esbuild-wasm": "^0.15.10",
+    "esbuild-wasm": "^0.15.11",
     "localforage": "^1.10.0",
     "monaco-editor": "^0.34.0",
     "prettier": "^2.7.1",
@@ -39,7 +39,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "npm run build && http-server --proxy http://localhost:8080? ./build"
+    "serve": "npm run build && http-server -p 3001 ./build"
   },
   "eslintConfig": {
     "extends": [

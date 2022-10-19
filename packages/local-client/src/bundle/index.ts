@@ -13,7 +13,7 @@ let initialized: boolean = false;
 const initialize = async () => {
   await esbuild.initialize({
     worker: true,
-    wasmURL: "https://unpkg.com/esbuild-wasm@0.15.10/esbuild.wasm",
+    wasmURL: "https://unpkg.com/esbuild-wasm@0.15.11/esbuild.wasm",
   }).then(() => initialized = true);
 }
 
