@@ -1,5 +1,7 @@
+import axios from 'axios';
+import { RootState } from 'state/store';
 import { useAppDispatch } from 'hooks/useAppDispatch';
-import { bindActionCreators, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { bindActionCreators, createAsyncThunk, createListenerMiddleware, createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit";
 
 type CellType = "code" | "text";
 
@@ -15,27 +17,16 @@ export interface CellsState {
   data: {
     [key: string]: Cell;
   },
+  order: string[];
   loading: boolean;
   error: string | null;
-  order: string[];
 }
 
 const initialState: CellsState = {
-  data: {
-    "code": {
-      id: "code",
-      content: "",
-      type: "code",
-    },
-    "text": {
-      id: "text",
-      content: "",
-      type: "text",
-    }
-  },
+  data: {},
+  order: [],
   loading: false,
   error: null,
-  order: ["text", "code"],
 }
 
 interface UpdateCellAction {
@@ -59,6 +50,23 @@ interface MoveCellAction {
 
 const randomId = () => Math.random().toString(36).substring(2, 5);
 
+export const fetchCells = createAsyncThunk(
+  "fetchCells",
+  async (): Promise<Cell[]> => {
+    const { data } = await axios.get("http://localhost:3095/cells");
+    return data;
+  }
+);
+
+export const saveCells = createAsyncThunk(
+  "saveCells",
+  async (_, action) => {
+    const { cells: { data, order } } = action.getState() as RootState;
+    const cells = order.map(id => data[id]);
+    await axios.post("http://localhost:3095/cells", { cells });
+  }
+)
+
 const slice = createSlice({
   name: 'cell',
   initialState,
@@ -77,11 +85,8 @@ const slice = createSlice({
       const cell: Cell = { id: randomId(), content: "", type: type };
       state.data[cell.id] = cell;
       const index = state.order.findIndex(orderedId => orderedId === id);
-      if (index < 0) {
-        state.order.push(cell.id);
-      } else {
-        state.order.splice(index, 0, cell.id);
-      }
+      if (index < 0) state.order.push(cell.id);
+      else state.order.splice(index, 0, cell.id);
     },
     moveCell: (state, action: PayloadAction<MoveCellAction>) => {
       const { id, direction } = action.payload;
@@ -92,8 +97,44 @@ const slice = createSlice({
       state.order[targetIndex] = id;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCells.pending, (state) => {
+        state.error = null;
+        state.loading = true;
+      }
+      )
+      .addCase(fetchCells.fulfilled, (state, action) => {
+        state.data = action.payload.reduce((acc, cell) => {
+          acc[cell.id] = cell;
+          return acc;
+        }, {} as { [key: string]: Cell });
+        state.order = action.payload.map(cell => cell.id);
+        state.loading = false;
+      })
+      .addCase(fetchCells.rejected, (state, action) => {
+        state.error = action.error.message || "";
+        state.loading = false;
+      })
+      .addCase(saveCells.rejected, (state, action) => {
+        state.error = action.error.message || "";
+      })
+  }
 })
 
 export const { actions, reducer: cellsReducer } = slice;
 
-export const useCellsActions = () => bindActionCreators(actions, useAppDispatch());
+export const cellsActionListener = createListenerMiddleware()
+let timer: any;
+cellsActionListener.startListening({
+  matcher: isAnyOf(actions.updateCell, actions.deleteCell, actions.insertCell, actions.moveCell),
+  effect: async (_, listenerApi) => {
+    listenerApi.cancelActiveListeners();
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      listenerApi.dispatch(saveCells());
+    }, 750);
+  }
+});
+
+export const useCellsActions = () => bindActionCreators({ ...actions, fetchCells, saveCells }, useAppDispatch());

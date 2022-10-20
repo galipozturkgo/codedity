@@ -1,5 +1,7 @@
 import path from "path";
+import cors from "cors";
 import express from "express";
+import { createCellsRouter } from "./routes/cells";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 export const serve = (
@@ -10,13 +12,19 @@ export const serve = (
 ) => {
   const app = express();
 
+  app.use(cors());
+  app.use(createCellsRouter(filename, dir));
+
   if (useProxy) {
     app.use(
-      createProxyMiddleware({
-        target: "http://localhost:3000/",
-        ws: true,
-        logLevel: "silent",
-      })
+      createProxyMiddleware(
+        '/',
+        {
+          target: "http://localhost:3000/",
+          ws: true,
+          logLevel: "silent",
+        }
+      )
     );
   } else {
     const packagePath = require.resolve("local-client/build/index.html");

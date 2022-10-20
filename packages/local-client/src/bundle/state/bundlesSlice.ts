@@ -18,20 +18,19 @@ interface BundleAction {
 }
 
 export const createBundle = createAsyncThunk(
-  '',
+  "bundling",
   async (payload: BundleAction): Promise<BundleOutputProps> => {
     return await bundle(payload.rawCode);
   }
 );
 
 const slice = createSlice({
-  name: 'bundle',
+  name: "bundle",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(createBundle.pending, (state: BundlesState, action) => {
+      .addCase(createBundle.pending, (state, action) => {
         const { cellId } = action.meta.arg;
         const cell = {
           loading: true,
@@ -42,7 +41,7 @@ const slice = createSlice({
         }
         state[cellId] = cell;
       })
-      .addCase(createBundle.fulfilled, (state: BundlesState, action) => {
+      .addCase(createBundle.fulfilled, (state, action) => {
         const { cellId } = action.meta.arg;
         let instate = state[cellId];
 
